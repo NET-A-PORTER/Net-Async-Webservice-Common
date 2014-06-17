@@ -1,8 +1,10 @@
 package Net::Async::Webservice::Common::SyncAgentWrapper;
 use Moo;
-use Net::Async::Webservice::Common::Types 'UserAgent';
+use Net::Async::Webservice::Common::Types 'SyncUserAgent';
 use HTTP::Request;
 use HTTP::Request::Common qw();
+use Future;
+use Carp;
 use namespace::autoclean;
 
 # ABSTRACT: minimal wrapper to adapt a sync UA
@@ -28,7 +30,7 @@ The actual user agent instance.
 
 has ua => (
     is => 'ro',
-    isa => UserAgent,
+    isa => SyncUserAgent,
     required => 1,
 );
 

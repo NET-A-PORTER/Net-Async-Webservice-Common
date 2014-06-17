@@ -12,19 +12,19 @@ use namespace::autoclean;
 =head2 C<AsyncUserAgent>
 
 Duck type, any object with a C<do_request>, C<GET> and C<POST>
-methods.  Coerced from L</UserAgent> via
+methods.  Coerced from L</SyncUserAgent> via
 L<Net::Async::Webservice::Common::SyncAgentWrapper>.
 
-=head2 C<UserAgent>
+=head2 C<SyncUserAgent>
 
 Duck type, any object with a C<request>, C<get> and C<post> methods.
 
 =cut
 
-duck_type AsyncUserAgent, [qw(POST do_request)];
-duck_type UserAgent, [qw(post request)];
+duck_type AsyncUserAgent, [qw(GET POST do_request)];
+duck_type SyncUserAgent, [qw(get post request)];
 
-coerce AsyncUserAgent, from UserAgent, via {
+coerce AsyncUserAgent, from SyncUserAgent, via {
     require Net::Async::Webservice::Common::SyncAgentWrapper;
     Net::Async::Webservice::Common::SyncAgentWrapper->new({ua=>$_});
 };

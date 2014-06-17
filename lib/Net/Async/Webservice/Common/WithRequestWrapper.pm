@@ -1,10 +1,11 @@
 package Net::Async::Webservice::Common::WithRequestWrapper;
-use Moo;
+use Moo::Role;
 use Types::Standard qw(Object HashRef Str);
 use Types::URI qw(Uri);
 use Type::Params qw(compile);
-use Net::Async::Webservice::UPS::Types qw(HTTPRequset);
+use Net::Async::Webservice::Common::Types qw(HTTPRequest);
 use Net::Async::Webservice::Common::Exception;
+use HTTP::Request;
 use Encode;
 use namespace::autoclean;
 use 5.010;
@@ -23,7 +24,7 @@ sub _build_ssl_options {
 }
 
 sub request {
-    state $argcheck = compile( Object, HTTPRequset );
+    state $argcheck = compile( Object, HTTPRequest );
     my ($self, $request) = $argcheck->(@_);
 
     my $response_future = $self->user_agent->do_request(
@@ -38,9 +39,9 @@ sub request {
             )
         },
         fail => sub {
-            my ($exception,$kind,$response) = @_;
+            my ($exception,$kind,$response,$req2) = @_;
             return (Net::Async::Webservice::Common::Exception::HTTPError->new({
-                request=>$request,
+                request=>($req2//$request),
                 response=>$response,
                 (($kind//'') ne 'http' ? ( more_info => "@_" ) : ()),
             }),'webservice');
