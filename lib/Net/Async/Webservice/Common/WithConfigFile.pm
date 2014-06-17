@@ -1,6 +1,6 @@
-package Net::Async::Webservice::Common::Moo::WithConfigFile;
+package Net::Async::Webservice::Common::WithConfigFile;
 use Moo::Role;
-use Net::Async::Webservice::Common::Moo::Exception;
+use Net::Async::Webservice::Common::Exception;
 use namespace::autoclean;
 use 5.010;
 
@@ -36,7 +36,7 @@ sub _load_config_file {
         flatten_to_hash => 1,
     });
     my $config = $loaded->{$file};
-    Net::Async::Webservice::Common::Moo::Exception::ConfigError->throw({
+    Net::Async::Webservice::Common::Exception::ConfigError->throw({
         file => $file,
     }) unless $config;
     return $config;

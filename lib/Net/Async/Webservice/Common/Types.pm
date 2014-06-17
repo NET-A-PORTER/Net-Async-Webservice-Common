@@ -1,4 +1,4 @@
-package Net::Async::Webservice::Common::Moo::Types;
+package Net::Async::Webservice::Common::Types;
 use strict;
 use warnings;
 use Type::Library
@@ -13,7 +13,7 @@ use namespace::autoclean;
 
 Duck type, any object with a C<do_request>, C<GET> and C<POST>
 methods.  Coerced from L</UserAgent> via
-L<Net::Async::Webservice::Common::Moo::SyncAgentWrapper>.
+L<Net::Async::Webservice::Common::SyncAgentWrapper>.
 
 =head2 C<UserAgent>
 
@@ -25,8 +25,8 @@ duck_type AsyncUserAgent, [qw(POST do_request)];
 duck_type UserAgent, [qw(post request)];
 
 coerce AsyncUserAgent, from UserAgent, via {
-    require Net::Async::Webservice::Common::Moo::SyncAgentWrapper;
-    Net::Async::Webservice::Common::Moo::SyncAgentWrapper->new({ua=>$_});
+    require Net::Async::Webservice::Common::SyncAgentWrapper;
+    Net::Async::Webservice::Common::SyncAgentWrapper->new({ua=>$_});
 };
 
 class_type HTTPRequest, { class => 'HTTP::Request' };

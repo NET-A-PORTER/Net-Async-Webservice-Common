@@ -1,6 +1,6 @@
-package Net::Async::Webservice::Common::Moo::WithUserAgent;
+package Net::Async::Webservice::Common::WithUserAgent;
 use Moo::Role;
-use Net::Async::Webservice::Common::Moo::Types qw(AsyncUserAgent);
+use Net::Async::Webservice::Common::Types qw(AsyncUserAgent);
 use namespace::autoclean;
 use 5.010;
 

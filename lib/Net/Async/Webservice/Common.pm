@@ -1,4 +1,4 @@
-package Net::Async::Webservice::Common::Moo;
+package Net::Async::Webservice::Common;
 use strict;
 use warnings;
 use 5.010;

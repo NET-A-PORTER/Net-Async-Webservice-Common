@@ -1,4 +1,4 @@
-package Net::Async::Webservice::Common::Moo::Exception;
+package Net::Async::Webservice::Common::Exception;
 use Moo;
 with 'Throwable','StackTrace::Auto';
 use overload
@@ -7,7 +7,7 @@ use overload
 
 =head1 NAME
 
-Net::Async::Webservice::Common::Moo::Exception - exception classes
+Net::Async::Webservice::Common::Exception - exception classes
 
 =head1 DESCRIPTION
 
@@ -17,7 +17,7 @@ stack trace.
 
 =head1 Classes
 
-=head2 C<Net::Async::Webservice::Common::Moo::Exception>
+=head2 C<Net::Async::Webservice::Common::Exception>
 
 Base class.
 
@@ -48,11 +48,11 @@ Generic "something bad happened", with stack trace.
 sub as_string { "something bad happened at ". $_[0]->stack_trace->as_string }
 
 {
-package Net::Async::Webservice::Common::Moo::Exception::ConfigError;
+package Net::Async::Webservice::Common::Exception::ConfigError;
  use Moo;
- extends 'Net::Async::Webservice::Common::Moo::Exception';
+ extends 'Net::Async::Webservice::Common::Exception';
 
-=head2 C<Net::Async::Webservice::Common::Moo::Exception::ConfigError>
+=head2 C<Net::Async::Webservice::Common::Exception::ConfigError>
 
 exception thrown when the configuration file can't be parsed
 
@@ -85,12 +85,12 @@ Mentions the file name, and gives the stack trace.
 
 
 {
-package Net::Async::Webservice::Common::Moo::Exception::HTTPError;
+package Net::Async::Webservice::Common::Exception::HTTPError;
  use Moo;
- extends 'Net::Async::Webservice::Common::Moo::Exception';
+ extends 'Net::Async::Webservice::Common::Exception';
  use Try::Tiny;
 
-=head2 C<Net::Async::Webservice::Common::Moo::Exception::HTTPError>
+=head2 C<Net::Async::Webservice::Common::Exception::HTTPError>
 
 exception thrown when the HTTP request fails
 

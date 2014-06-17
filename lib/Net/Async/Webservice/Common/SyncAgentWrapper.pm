@@ -1,6 +1,6 @@
-package Net::Async::Webservice::Common::Moo::SyncAgentWrapper;
+package Net::Async::Webservice::Common::SyncAgentWrapper;
 use Moo;
-use Net::Async::Webservice::Common::Moo::Types 'UserAgent';
+use Net::Async::Webservice::Common::Types 'UserAgent';
 use HTTP::Request;
 use HTTP::Request::Common qw();
 use namespace::autoclean;
@@ -18,7 +18,7 @@ request.
 An instance of this class will be automatically created if you pass a
 L<LWP::UserAgent> (or something that looks like it) to the constructor
 for a class doing
-L<Net::Async::Webservice::Common::Moo::WithUserAgent>.
+L<Net::Async::Webservice::Common::WithUserAgent>.
 
 =attr C<ua>
 

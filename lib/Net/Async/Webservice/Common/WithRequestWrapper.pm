@@ -1,10 +1,10 @@
-package Net::Async::Webservice::Common::Moo::WithRequestWrapper;
+package Net::Async::Webservice::Common::WithRequestWrapper;
 use Moo;
 use Types::Standard qw(Object HashRef Str);
 use Types::URI qw(Uri);
 use Type::Params qw(compile);
 use Net::Async::Webservice::UPS::Types qw(HTTPRequset);
-use Net::Async::Webservice::Common::Moo::Exception;
+use Net::Async::Webservice::Common::Exception;
 use Encode;
 use namespace::autoclean;
 use 5.010;
@@ -39,7 +39,7 @@ sub request {
         },
         fail => sub {
             my ($exception,$kind,$response) = @_;
-            return (Net::Async::Webservice::Common::Moo::Exception::HTTPError->new({
+            return (Net::Async::Webservice::Common::Exception::HTTPError->new({
                 request=>$request,
                 response=>$response,
                 (($kind//'') ne 'http' ? ( more_info => "@_" ) : ()),
