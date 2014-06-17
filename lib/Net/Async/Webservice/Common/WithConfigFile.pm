@@ -6,6 +6,23 @@ use 5.010;
 
 # ABSTRACT: automatically load constructor args from a config file
 
+=head1 SYNOPSIS
+
+  package My::WS::Client {
+   use Moo;
+   with 'Net::Async::Webservice::Common::WithConfigFile';
+   has param => (is => 'ro', required => 1);
+  }
+
+  my $c = My::WS::Client->new({config_file=>'/etc/my.conf'});
+
+=head1 DESCRIPTION
+
+This role wraps C<BUILDARGS> and, if a C<config_file> argument was
+passed to the constructor, loads that file with L<Config::Any> and
+adds the values loaded to the arguments (explicitly passed constructor
+arguments still take precedence).
+
 =head1 SEE ALSO
 
 L<MooX::ConfigFromFile> for a more comprehensive solution.

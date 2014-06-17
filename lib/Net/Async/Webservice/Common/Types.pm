@@ -9,6 +9,10 @@ use Type::Library
 use Type::Utils -all;
 use namespace::autoclean;
 
+# ABSTRACT: common types for async webservice clients
+
+=head1 Types
+
 =head2 C<AsyncUserAgent>
 
 Duck type, any object with a C<do_request>, C<GET> and C<POST>
@@ -28,6 +32,12 @@ coerce AsyncUserAgent, from SyncUserAgent, via {
     require Net::Async::Webservice::Common::SyncAgentWrapper;
     Net::Async::Webservice::Common::SyncAgentWrapper->new({ua=>$_});
 };
+
+=head2 C<HTTPRequest>
+
+Class type for L<HTTP::Request>.
+
+=cut
 
 class_type HTTPRequest, { class => 'HTTP::Request' };
 

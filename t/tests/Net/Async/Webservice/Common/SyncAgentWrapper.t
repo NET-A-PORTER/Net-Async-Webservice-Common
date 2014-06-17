@@ -12,6 +12,7 @@ package TestUA {
     use Moo;
     has last_call => ( is => 'rw' );
     has next_result => ( is => 'rw' );
+    has _ssl_opts => ( is => 'rw' );
     sub request {
         my ($self,$req) = @_;
 
@@ -20,6 +21,10 @@ package TestUA {
     }
     sub get {}
     sub post {}
+    sub ssl_opts {
+        my ($self,%opts) = @_;
+        $self->_ssl_opts(\%opts);
+    }
 };
 
 my $success_res = HTTP::Response->new(200,'ok',[],'foo');
@@ -94,6 +99,19 @@ subtest 'building the request' => sub {
                    ),
                ),
                'request ok');
+};
+
+subtest 'SSL' => sub {
+    $ua->next_result($success_res);
+    my $f = $wua->do_request(
+        request => HTTP::Request->new(GET=>'/foo'),
+        SSL_something => 12,
+    );
+    ok($f->is_done,'success');
+    cmp_deeply($f->get, $success_res, 'response ok');
+    cmp_deeply($ua->_ssl_opts,
+               { SSL_something => 12 },
+               'SSL options set');
 };
 
 done_testing;

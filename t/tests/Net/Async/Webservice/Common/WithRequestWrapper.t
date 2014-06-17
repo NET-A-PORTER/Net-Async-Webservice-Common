@@ -51,7 +51,7 @@ subtest 'GET request' => sub {
                    fail_on_error => 1,
                },
                'request ok')
-        or diag p $ua->calls;
+        or diag p $ua->last_call;
     ok($f->is_done,'success');
     cmp_deeply($f->get,
                'some content',
@@ -78,7 +78,7 @@ subtest 'POST request, HTTP fail' => sub {
                    fail_on_error => 1,
                },
                'request ok')
-        or diag p $ua->calls;
+        or diag p $ua->last_call;
     ok(scalar($f->failure),'failure');
     cmp_deeply([$f->failure],
                [all(
@@ -117,7 +117,7 @@ subtest 'raw request, other fail' => sub {
                    fail_on_error => 1,
                },
                'request ok')
-        or diag p $ua->calls;
+        or diag p $ua->last_call;
     ok(scalar($f->failure),'failure');
     cmp_deeply([$f->failure],
                [all(
@@ -130,6 +130,51 @@ subtest 'raw request, other fail' => sub {
                ),'webservice'],
                'correct exception')
         or diag p $f->failure;
+};
+
+subtest 'SSL' => sub {
+    $ua->next_result([
+        'done',
+        HTTP::Response->new(200,'ok',[],'some content'),
+    ]);
+    my $f = $t->get('https://foo/');
+    cmp_deeply($ua->last_call,
+               {
+                   request => all(
+                       isa('HTTP::Request'),
+                       methods(
+                           uri => str('https://foo/'),
+                           method => 'GET',
+                       ),
+                   ),
+                   SSL_verify_mode => ignore(),
+                   fail_on_error => 1,
+               },
+               'request ok')
+        or diag p $ua->last_call;
+};
+
+subtest 'SSL, custom options' => sub {
+    my $t2 = TestPkg->new({user_agent=>$ua,ssl_options=>{SSL_something=>12}});
+    $ua->next_result([
+        'done',
+        HTTP::Response->new(200,'ok',[],'some content'),
+    ]);
+    my $f = $t2->get('https://foo/');
+    cmp_deeply($ua->last_call,
+               {
+                   request => all(
+                       isa('HTTP::Request'),
+                       methods(
+                           uri => str('https://foo/'),
+                           method => 'GET',
+                       ),
+                   ),
+                   SSL_something => 12,
+                   fail_on_error => 1,
+               },
+               'request ok')
+        or diag p $ua->last_call;
 };
 
 done_testing;

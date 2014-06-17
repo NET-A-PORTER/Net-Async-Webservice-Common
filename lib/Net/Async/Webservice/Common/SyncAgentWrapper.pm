@@ -53,6 +53,9 @@ actual method in L<Net::Async::HTTP>. These are supported:
 * C<< pass => >> string
 * C<< fail_on_error => >> boolean
 
+In additon, options with keys of the form C<< SSL_* >> will be set via
+the C<ssl_opts> method, if the underlying user agent supports it.
+
 =cut
 
 sub do_request {
@@ -64,6 +67,10 @@ sub do_request {
 
     my $request = $args{request};
     my $fail = $args{fail_on_error};
+    my %ssl = map { m/^SSL_/ ? ( $_ => $args{$_} ) : () } keys %args;
+    if ($self->ua->can('ssl_opts') && %ssl) {
+        $self->ua->ssl_opts(%ssl);
+    }
 
     my $response = $self->ua->request($request);
     if ($fail && ! $response->is_success) {

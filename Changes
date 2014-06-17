@@ -1,1 +1,4 @@
 {{$NEXT}}
+ - factored out common pieces from Net::Async::Webservice::{UPS,DHL}
+ - added more flexible SSL options specification
+ - SyncAgentWrapper is more powerful
