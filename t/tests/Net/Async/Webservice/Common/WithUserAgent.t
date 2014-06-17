@@ -13,6 +13,7 @@ package Net::Async::HTTP { # yes, a fake one
     sub POST {}
     sub GET {}
 };
+$INC{'Net/Async/HTTP.pm'}=__FILE__;
 
 package TestLoop {
     use Moo;
