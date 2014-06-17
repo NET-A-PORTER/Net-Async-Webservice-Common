@@ -5,6 +5,7 @@ use HTTP::Request;
 use HTTP::Request::Common qw();
 use Future;
 use Carp;
+use Scalar::Util 'blessed';
 use namespace::autoclean;
 
 # ABSTRACT: minimal wrapper to adapt a sync UA
