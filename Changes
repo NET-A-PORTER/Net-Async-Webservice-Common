@@ -1,5 +1,3 @@
-{{$NEXT}}
-
 0.01_1    2014-06-17 18:00:21+01:00 Europe/London
  - factored out common pieces from Net::Async::Webservice::{UPS,DHL}
  - added more flexible SSL options specification
