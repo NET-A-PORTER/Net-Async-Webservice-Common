@@ -8,7 +8,7 @@ use Net::Async::Webservice::Common::SyncAgentWrapper;
 use HTTP::Request;
 use HTTP::Response;
 
-package TestUA {
+{package TestUA;
     use Moo;
     has last_call => ( is => 'rw' );
     has next_result => ( is => 'rw' );

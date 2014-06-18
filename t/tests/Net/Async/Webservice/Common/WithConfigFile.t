@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 use Test::Most;
 
-package TestPkg {
+{package TestPkg;
     use Moo;
     with 'Net::Async::Webservice::Common::WithConfigFile';
     has param => ( is => 'ro', required => 1 );

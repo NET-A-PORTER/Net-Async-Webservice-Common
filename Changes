@@ -1,4 +1,5 @@
 {{$NEXT}}
+ - avoid package-block syntax, we don't want to exclude 5.10 and 5.12
 
 0.01_1    2014-06-17 18:00:21+01:00 Europe/London
  - factored out common pieces from Net::Async::Webservice::{UPS,DHL}

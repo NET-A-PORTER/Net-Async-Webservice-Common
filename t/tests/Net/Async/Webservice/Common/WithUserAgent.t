@@ -7,7 +7,7 @@ use Data::Printer;
 use HTTP::Request;
 use HTTP::Response;
 
-package Net::Async::HTTP { # yes, a fake one
+{package Net::Async::HTTP; # yes, a fake one
     use Moo;
     sub do_request {}
     sub POST {}
@@ -15,7 +15,7 @@ package Net::Async::HTTP { # yes, a fake one
 };
 $INC{'Net/Async/HTTP.pm'}=__FILE__;
 
-package TestLoop {
+{package TestLoop;
     use Moo;
     has added => ( is => 'rw', default => sub { [] } );
     sub add {
@@ -25,14 +25,14 @@ package TestLoop {
     }
 };
 
-package TestUA {
+{package TestUA;
     use Moo;
     sub request {}
     sub get {}
     sub post {}
 };
 
-package TestPkg {
+{package TestPkg;
     use Moo;
 
     with 'Net::Async::Webservice::Common::WithUserAgent';

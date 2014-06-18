@@ -7,7 +7,7 @@ use Data::Printer;
 use HTTP::Request;
 use HTTP::Response;
 
-package TestUA {
+{package TestUA;
     use Moo;
     use Future;
     has last_call => ( is => 'rw' );
@@ -21,7 +21,7 @@ package TestUA {
     }
 };
 
-package TestPkg {
+{package TestPkg;
     use Moo;
 
     has user_agent => ( is => 'ro' );
