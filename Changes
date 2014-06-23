@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.01_3    2014-06-23 09:55:46+01:00 Europe/London
  - avoid stealth dependency on Config::General, use a Perl "config
    file" for testing
 
