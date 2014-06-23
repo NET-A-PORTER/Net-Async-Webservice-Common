@@ -11,7 +11,7 @@ use Test::Most;
 };
 
 my $t;
-lives_ok { $t=TestPkg->new({config_file=>'t/lib/NaWsCwCF.conf'}) }
+lives_ok { $t=TestPkg->new({config_file=>'t/lib/NaWsCwCF.pl'}) }
     'required param satisfied by config';
 is($t->param,'some value','with correct value');
 
