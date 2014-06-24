@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.01_4    2014-06-24 09:54:46+01:00 Europe/London
  - make tests pass when IO::Socket::SSL is not installed
 
 0.01_3    2014-06-23 09:55:46+01:00 Europe/London
