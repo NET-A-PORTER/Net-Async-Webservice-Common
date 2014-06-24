@@ -132,6 +132,8 @@ subtest 'raw request, other fail' => sub {
         or diag p $f->failure;
 };
 
+my $has_ssl = eval "require IO::Socket::SSL";
+
 subtest 'SSL' => sub {
     $ua->next_result([
         'done',
@@ -147,7 +149,7 @@ subtest 'SSL' => sub {
                            method => 'GET',
                        ),
                    ),
-                   SSL_verify_mode => ignore(),
+                   ( $has_ssl ? ( SSL_verify_mode => ignore() ) : () ),
                    fail_on_error => 1,
                },
                'request ok')
