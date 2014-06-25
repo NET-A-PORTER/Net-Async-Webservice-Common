@@ -1,4 +1,8 @@
 package Net::Async::Webservice::Common::SyncAgentWrapper;
+$Net::Async::Webservice::Common::SyncAgentWrapper::VERSION = '1.0.0';
+{
+  $Net::Async::Webservice::Common::SyncAgentWrapper::DIST = 'Net-Async-Webservice-Common';
+}
 use Moo;
 use Net::Async::Webservice::Common::Types 'SyncUserAgent';
 use HTTP::Request;
@@ -10,24 +14,6 @@ use namespace::autoclean;
 
 # ABSTRACT: minimal wrapper to adapt a sync UA
 
-=head1 DESCRIPTION
-
-This class wraps an instance of L<LWP::UserAgent> (or something that
-looks like it) to allow it to be used as if it were a
-L<Net::Async::HTTP>. It is I<very> limited at the moment, please read
-all of this document and, if you need more power, submit a bug
-request.
-
-An instance of this class will be automatically created if you pass a
-L<LWP::UserAgent> (or something that looks like it) to the constructor
-for a class doing
-L<Net::Async::Webservice::Common::WithUserAgent>.
-
-=attr C<ua>
-
-The actual user agent instance.
-
-=cut
 
 has ua => (
     is => 'ro',
@@ -35,28 +21,6 @@ has ua => (
     required => 1,
 );
 
-=method C<do_request>
-
-Delegates to C<< $self->ua->request >>, and returns an immediate
-L<Future>. It supports just a few of the options you can pass to the
-actual method in L<Net::Async::HTTP>. These are supported:
-
-=for :list
-* C<< request => >> L<HTTP::Request>
-* C<< host => >> string
-* C<< port => >> int or string
-* C<< uri => >> L<URI> or string
-* C<< method => >> string
-* C<< content => >> string or arrayref
-* C<< content_type => >> string
-* C<< user => >> string
-* C<< pass => >> string
-* C<< fail_on_error => >> boolean
-
-In additon, options with keys of the form C<< SSL_* >> will be set via
-the C<ssl_opts> method, if the underlying user agent supports it.
-
-=cut
 
 sub do_request {
     my ($self,%args) = @_;
@@ -134,25 +98,6 @@ sub _make_request
    return %args;
 }
 
-=method C<GET>
-
-  $ua->GET( $uri, %args ) ==> $response
-
-=method C<HEAD>
-
- $ua->HEAD( $uri, %args ) ==> $response
-
-=method C<POST>
-
- $ua->POST( $uri, $content, %args ) ==> $response
-
-Convenient wrappers for using the C<GET>, C<HEAD> or C<POST> methods with a
-C<URI> object and few if any other arguments, returning a C<Future>.
-
-Please check the documentation of L</do_request> for the values you
-can usefully pass in C<%args>.
-
-=cut
 
 sub GET {
    my ($self, $uri, @args) = @_;
@@ -170,3 +115,122 @@ sub POST {
 }
 
 1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Net::Async::Webservice::Common::SyncAgentWrapper - minimal wrapper to adapt a sync UA
+
+=head1 VERSION
+
+version 1.0.0
+
+=head1 DESCRIPTION
+
+This class wraps an instance of L<LWP::UserAgent> (or something that
+looks like it) to allow it to be used as if it were a
+L<Net::Async::HTTP>. It is I<very> limited at the moment, please read
+all of this document and, if you need more power, submit a bug
+request.
+
+An instance of this class will be automatically created if you pass a
+L<LWP::UserAgent> (or something that looks like it) to the constructor
+for a class doing
+L<Net::Async::Webservice::Common::WithUserAgent>.
+
+=head1 ATTRIBUTES
+
+=head2 C<ua>
+
+The actual user agent instance.
+
+=head1 METHODS
+
+=head2 C<do_request>
+
+Delegates to C<< $self->ua->request >>, and returns an immediate
+L<Future>. It supports just a few of the options you can pass to the
+actual method in L<Net::Async::HTTP>. These are supported:
+
+=over 4
+
+=item *
+
+C<< request => >> L<HTTP::Request>
+
+=item *
+
+C<< host => >> string
+
+=item *
+
+C<< port => >> int or string
+
+=item *
+
+C<< uri => >> L<URI> or string
+
+=item *
+
+C<< method => >> string
+
+=item *
+
+C<< content => >> string or arrayref
+
+=item *
+
+C<< content_type => >> string
+
+=item *
+
+C<< user => >> string
+
+=item *
+
+C<< pass => >> string
+
+=item *
+
+C<< fail_on_error => >> boolean
+
+=back
+
+In additon, options with keys of the form C<< SSL_* >> will be set via
+the C<ssl_opts> method, if the underlying user agent supports it.
+
+=head2 C<GET>
+
+  $ua->GET( $uri, %args ) ==> $response
+
+=head2 C<HEAD>
+
+ $ua->HEAD( $uri, %args ) ==> $response
+
+=head2 C<POST>
+
+ $ua->POST( $uri, $content, %args ) ==> $response
+
+Convenient wrappers for using the C<GET>, C<HEAD> or C<POST> methods with a
+C<URI> object and few if any other arguments, returning a C<Future>.
+
+Please check the documentation of L</do_request> for the values you
+can usefully pass in C<%args>.
+
+=head1 AUTHOR
+
+Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2014 by Net-a-porter.com.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
