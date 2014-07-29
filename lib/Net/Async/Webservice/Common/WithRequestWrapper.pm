@@ -1,4 +1,8 @@
 package Net::Async::Webservice::Common::WithRequestWrapper;
+$Net::Async::Webservice::Common::WithRequestWrapper::VERSION = '1.0.1';
+{
+  $Net::Async::Webservice::Common::WithRequestWrapper::DIST = 'Net-Async-Webservice-Common';
+}
 use Moo::Role;
 use Types::Standard qw(Object HashRef Str);
 use Types::URI qw(Uri);
@@ -11,6 +15,88 @@ use namespace::autoclean;
 use 5.010;
 
 # ABSTRACT: helper methods to perform HTTP request
+
+
+requires 'user_agent';
+
+
+has ssl_options => (
+    is => 'lazy',
+    isa => HashRef,
+);
+sub _build_ssl_options {
+    # this is to work around an issue with IO::Async::SSL, see
+    # https://rt.cpan.org/Ticket/Display.html?id=96474
+    eval "require IO::Socket::SSL" or return {};
+    return { SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() }
+}
+
+
+sub request {
+    state $argcheck = compile( Object, HTTPRequest );
+    my ($self, $request) = $argcheck->(@_);
+
+    my $response_future = $self->user_agent->do_request(
+        request => $request,
+        fail_on_error => 1,
+        (($request->uri->scheme//'') eq 'https' ? %{ $self->ssl_options // {} } : ()),
+    )->transform(
+        done => sub {
+            my ($response) = @_;
+            return $response->decoded_content(
+                default_charset => 'utf-8',
+                raise_error => 1,
+            )
+        },
+        fail => sub {
+            my ($exception,$kind,$response,$req2) = @_;
+            return (Net::Async::Webservice::Common::Exception::HTTPError->new({
+                request=>($req2//$request),
+                response=>$response,
+                (($kind//'') ne 'http' ? ( more_info => "@_" ) : ()),
+            }),'webservice');
+        },
+    );
+}
+
+
+sub post {
+    state $argcheck = compile( Object, Uri, Str );
+    my ($self, $url, $body) = $argcheck->(@_);
+
+    my $request = HTTP::Request->new(
+        POST => $url,
+        [], encode('utf-8',$body),
+    );
+    return $self->request($request);
+}
+
+
+sub get {
+    state $argcheck = compile( Object, Uri );
+    my ($self, $url) = $argcheck->(@_);
+
+    my $request = HTTP::Request->new(
+        GET => $url,
+    );
+    return $self->request($request);
+}
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Net::Async::Webservice::Common::WithRequestWrapper - helper methods to perform HTTP request
+
+=head1 VERSION
+
+version 1.0.1
 
 =head1 SYNOPSIS
 
@@ -41,29 +127,16 @@ L<Net::Async::Webservice::Common::Exception::HTTPError> and returned
 as failed futures. On success, the future yields the decoded content
 of the response.
 
-=cut
+=head1 ATTRIBUTES
 
-requires 'user_agent';
-
-=attr C<ssl_options>
+=head2 C<ssl_options>
 
 Optional hashref, its contents will be passed to C<user_agent>'s
 C<do_request> method.
 
-=cut
+=head1 METHODS
 
-has ssl_options => (
-    is => 'lazy',
-    isa => HashRef,
-);
-sub _build_ssl_options {
-    # this is to work around an issue with IO::Async::SSL, see
-    # https://rt.cpan.org/Ticket/Display.html?id=96474
-    eval "require IO::Socket::SSL" or return {};
-    return { SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() }
-}
-
-=method C<request>
+=head2 C<request>
 
   $c->request($http_request) ==> $decoded_content
 
@@ -74,36 +147,7 @@ the future will fail with a two-element failure: a
 L<Net::Async::Webservice::Common::Exception::HTTPError> and the string
 C<'webservice'>.
 
-=cut
-
-sub request {
-    state $argcheck = compile( Object, HTTPRequest );
-    my ($self, $request) = $argcheck->(@_);
-
-    my $response_future = $self->user_agent->do_request(
-        request => $request,
-        fail_on_error => 1,
-        (($request->uri->scheme//'') eq 'https' ? %{ $self->ssl_options // {} } : ()),
-    )->transform(
-        done => sub {
-            my ($response) = @_;
-            return $response->decoded_content(
-                default_charset => 'utf-8',
-                raise_error => 1,
-            )
-        },
-        fail => sub {
-            my ($exception,$kind,$response,$req2) = @_;
-            return (Net::Async::Webservice::Common::Exception::HTTPError->new({
-                request=>($req2//$request),
-                response=>$response,
-                (($kind//'') ne 'http' ? ( more_info => "@_" ) : ()),
-            }),'webservice');
-        },
-    );
-}
-
-=method C<post>
+=head2 C<post>
 
   $c->post($url,$body) ==> $decoded_content
 
@@ -111,36 +155,22 @@ Shortcut to submit a very basic POST request. The C<$body> will be
 UTF-8 encoded, no headers are set. Uses L</request> to perform the
 actual request.
 
-=cut
-
-sub post {
-    state $argcheck = compile( Object, Uri, Str );
-    my ($self, $url, $body) = $argcheck->(@_);
-
-    my $request = HTTP::Request->new(
-        POST => $url,
-        [], encode('utf-8',$body),
-    );
-    return $self->request($request);
-}
-
-=method C<get>
+=head2 C<get>
 
   $c->get($url) ==> $decoded_content
 
 Shortcut to submit a very basic GET request. No headers are set. Uses
 L</request> to perform the actual request.
 
+=head1 AUTHOR
+
+Gianni Ceccarelli <gianni.ceccarelli@net-a-porter.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2014 by Net-a-porter.com.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
-
-sub get {
-    state $argcheck = compile( Object, Uri );
-    my ($self, $url) = $argcheck->(@_);
-
-    my $request = HTTP::Request->new(
-        GET => $url,
-    );
-    return $self->request($request);
-}
-
-1;
