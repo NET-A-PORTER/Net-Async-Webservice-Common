@@ -1,4 +1,6 @@
 {{$NEXT}}
+ - bump version requirements for Future (to get is_done) and Moo (to
+   get non-ref defaults via constants instead of coderefs)
 
 1.0.1     2014-07-29 11:19:55+01:00 Europe/London
  - use SingleEncoding (thanks sergeyromanov)
