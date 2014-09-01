@@ -32,6 +32,7 @@ coerce AsyncUserAgent, from SyncUserAgent, via {
     require Net::Async::Webservice::Common::SyncAgentWrapper;
     Net::Async::Webservice::Common::SyncAgentWrapper->new({ua=>$_});
 };
+AsyncUserAgent->coercion->freeze;
 
 =head2 C<HTTPRequest>
 
